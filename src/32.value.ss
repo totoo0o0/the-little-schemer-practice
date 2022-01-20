@@ -1,0 +1,45 @@
+(define numbered?
+    (lambda (aexp)
+        (cond
+            ((atom? aexp) (number? aexp))
+            ((eq? (car (cdr aexp)) `+) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `-) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `*) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `/) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `^) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            (else #f)
+        )
+    )
+)
+(define ^
+    (lambda (n m)
+        (cond
+            ((zero? m) 1)
+            (else (* n (^ n (- m 1))))
+        )
+    )
+)
+
+(define value
+    (lambda (nexp)
+        (cond
+            ((number? nexp) nexp)
+            ((numbered? nexp)
+                (cond
+                    ((eq? (car (cdr nexp)) `+) (+ (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                    ((eq? (car (cdr nexp)) `-) (- (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                    ((eq? (car (cdr nexp)) `*) (* (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                    ((eq? (car (cdr nexp)) `/) (/ (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                    ((eq? (car (cdr nexp)) `^) (^ (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                )
+            )
+            (else `())
+        )
+    )
+)
+(display (value 13))
+(newline)
+(display (value `(1 + 3)))
+(newline)
+(display (value `(1 + (3 ^ 4))))
+(newline)

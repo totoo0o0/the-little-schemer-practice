@@ -1,0 +1,27 @@
+(define eqlist?
+    (lambda (l1 l2)
+        (cond
+            ((eq? (null? l1) (null? l2))
+                (cond
+                    ((null? l1) #t)
+                    ((eq? (atom? (car l1)) (atom? (car l2)))
+                        (cond
+                            ((atom? (car l1)) (and (eq? (car l1) (car l2)) (eqlist? (cdr l1) (cdr l2))))
+                            (else (and (eqlist? (car l1) (car l2)) (eqlist? (cdr l1) (cdr l2))))
+                        )
+                    )
+                    (else #f)
+                )
+            )
+            (else #f)
+        )
+    )
+)
+(display (eqlist? `(strawberry ice cream) `(starwberry cream ice)))
+(newline)
+(display (eqlist? `(banana ((split))) `((banana) (split))))
+(newline)
+(display (eqlist? `(beef ((sausage)) (and (soda))) `(beef ((salami)) (and (soda)))))
+(newline)
+(display (eqlist? `(beef ((sausage)) (and (soda))) `(beef ((sausage)) (and (soda)))))
+(newline)

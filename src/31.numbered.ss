@@ -1,0 +1,20 @@
+(define numbered?
+    (lambda (aexp)
+        (cond
+            ((atom? aexp) (number? aexp))
+            ((eq? (car (cdr aexp)) `+) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `-) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `*) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `/) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            ((eq? (car (cdr aexp)) `^) (and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))
+            (else #f)
+        )
+    )
+)
+
+(display (numbered? `(4 + 3)))
+(newline)
+(display (numbered? `(3 + (4 * 5))))
+(newline)
+(display (numbered? `(2 * n)))
+(newline)
